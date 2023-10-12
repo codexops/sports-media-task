@@ -1,0 +1,15 @@
+1. This query will calculate the CPU usage of containers in the "default" namespace over the last 10 minutes as a percentage of their CPU limits. If the calculated percentage is greater than or equal to 70%, the condition for triggering the alert is met.
+
+(sum by (pod) (rate (container_cpu_usage_seconds_total{namespace=~"default"}[10m] ))*100) / (sum by (pod) ((kube_pod_container_resource_limits_cpu_cores{namespace=~"default"}))) >= 70
+
+2. This query calculates the memory working set (current memory usage) of containers in the "instill-ai" namespace as a percentage of their memory limits. If the calculated percentage is greater than or equal to 90%, the condition for triggering the alert is met. 
+
+(sum by (pod) (container_memory_working_set_bytes{namespace=~"default"})) / (sum by (pod) (kube_pod_container_resource_limits_memory_bytes{namespace=~"default"})) * 100 >= 70
+
+
+3. In this query, the instance=~"production.*" selector is used to match nodes with labels that start with "production.*", it will be genrating alert for the specifc node of k8s
+
+100 - (node_filesystem_avail_bytes{mountpoint="/", instance=~"production.*"}) / (node_filesystem_size_bytes{mountpoint="/", instance=~"production.*"}) * 100 >= 90
+
+
+

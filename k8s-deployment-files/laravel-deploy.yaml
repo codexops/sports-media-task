@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-kubernetes-demo
+spec:
+  replicas: 3  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: laravel-kubernetes-demo
+  template:
+    metadata:
+      labels:
+        app: laravel-kubernetes-demo
+    spec:
+      containers:
+      - name: laravel-container
+        image: sachinvasle99/sample-laravel-app
+        ports:
+        - containerPort: 80
+        env:
+        - name: APP_KEY
+          value: "base64:cUPmwHx4LXa4Z25HhzFiWCf7TlQmSqnt98pnuiHmzgY="
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-service
+spec:
+  selector:
+    app: laravel-kubernetes-demo
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP  # Change this to your desired service type (LoadBalancer, NodePort, etc.)          
